@@ -1,0 +1,55 @@
+LibMythicPlus:OnApiReady(function(api)
+    local AceGUI = LibStub("AceGUI-3.0")
+    local Container = AceGUI:Create("Frame")
+    Container:SetLayout("Fill")
+    Container:SetWidth(175)
+    Container:SetPoint("TOPLEFT", 10, -200)
+    Container:EnableResize(false)
+    Container:SetTitle("LibMythicPlus Tester")
+    Container:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
+    local TestFrame = AceGUI:Create("ScrollFrame")
+    TestFrame:SetLayout("List")
+
+    Container:AddChild(TestFrame)
+
+    local function AddMessage(msg)
+        local label = AceGUI:Create("Label")
+        label:SetFullWidth(true)
+        label:SetText(msg)
+        TestFrame:AddChild(label)
+
+        local spacerLabel = AceGUI:Create("Label")
+        spacerLabel:SetText(" ")
+        TestFrame:AddChild(spacerLabel)
+    end
+
+    local ownedKeystone = api:GetOwnedKeystone()
+    
+    if ownedKeystone then
+        AddMessage("You have a keystone for " .. ownedKeystone.level .. " " .. ownedKeystone.mapName)        
+    else
+        AddMessage("You do not have a keystone")
+    end
+
+    api:OnMythicPlusChallengeStarted(function(mythicPlusChallenge)
+        AddMessage("Started a M+ Challenge for " .. mythicPlusChallenge.keystone.level .. " " .. mythicPlusChallenge.keystone.mapName)
+    end)
+    api:OnMythicPlusChallengeAbandoned(function(mythicPlusChallenge)
+        AddMessage("Abandoned a M+ Challenge because " .. mythicPlusChallenge.reason)
+    end)
+    api:OnMythicPlusChallengeCompleted(function(mythicPlusChallenge)
+        AddMessage("Completed a M+ Challenge for " .. mythicPlusChallenge.keystone.level .. " " .. mythicPlusChallenge.keystone.mapName .. ", upgraded the key " .. mythicPlusChallenge.result)
+    end)
+    api:OnInstanceLeftWhileMythicPlusChallengeStillActive(function()
+        AddMessage("Left the instance but a M+ challenge is still going")
+    end)
+    api:OnInstanceReenteredWhileMythicPlusChallengeStillActive(function()
+        AddMessage("We reentered the instance while the challenge is still going")
+    end)
+    api:OnKeystoneSlotted(function(keystone)
+        AddMessage("A keystone for " .. keystone.level .. " " .. keystone.mapName .. " was slotted into the challenge mode pedestal")
+    end)
+    api:OnDeathDuringMythicPlusChallenge(function(activeChallenge)
+        AddMessage("Somebody in the group perished")
+    end)
+end)

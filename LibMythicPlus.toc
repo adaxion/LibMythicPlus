@@ -1,0 +1,11 @@
+## Interface: 100002
+## Title: LibMythicPlus
+## Author: Adaxion
+## Version: 0.1
+
+## SavedVariables: LibMythicPlusDB
+
+embeds.xml
+
+LibMythicPlus.lua
+Tester.lua
